@@ -58,15 +58,19 @@ cmd = sys.argv[1]
 
 nr_cores = multiprocessing.cpu_count()
 
-setarch = 'setarch linux64 -R'
-try:
-    retcode = subprocess.call(setarch + " /bin/true", shell=True)
-except OSError, e:
-    retcode = -1
+if sys.platform.startswith('linux'):
+    setarch = 'setarch linux64 -R'
+    try:
+        retcode = subprocess.call(setarch + " /bin/true", shell=True)
+    except OSError, e:
+        retcode = -1
 
-if retcode != 0:
+    if retcode != 0:
+        setarch = ''
+        print >> sys.stderr, 'WARNING: setarch -R failed, address space randomization may cause variability'
+else:
     setarch = ''
-    print >> sys.stderr, 'WARNING: setarch -R failed, address space randomization may cause variability'
+
 
 pipe = subprocess.Popen('uname -m', shell=True, stdout=subprocess.PIPE).stdout
 arch = pipe.readline().rstrip(os.linesep)
@@ -100,7 +104,7 @@ for i in data_points:
             title = open(cmd + '.title', 'w')
             title.write(val)    
             title.close() 
-            
+
         if 'average:' in line:
             (name, val) = line.split(':')
             processes_avg = int(val)
