@@ -49,14 +49,14 @@ class linux_stat():
         return 1.0 * idle / (idle + busy)
 
 
-duration=5
+duration = 5
 
 if len(sys.argv) != 2:
     print >> sys.stderr, 'Usage: runtest.py <testcase>'
     sys.exit(1)
 cmd = sys.argv[1]
 
-nr_cores=multiprocessing.cpu_count()
+nr_cores = multiprocessing.cpu_count()
 
 setarch = 'setarch linux64 -R'
 try:
