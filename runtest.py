@@ -1,7 +1,8 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 import time
 import subprocess
+import multiprocessing
 import sys
 import os
 import re
@@ -55,13 +56,7 @@ if len(sys.argv) != 2:
     sys.exit(1)
 cmd = sys.argv[1]
 
-nr_cores=0
-r = re.compile('^processor')
-fd = open('/proc/cpuinfo', 'r')
-for line in fd.readlines():
-    if r.search(line):
-        nr_cores = nr_cores + 1
-fd.close()
+nr_cores=multiprocessing.cpu_count()
 
 setarch = 'setarch linux64 -R'
 try:
